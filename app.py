@@ -95,48 +95,40 @@ def get_css(theme):
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-/* ===== HEADER STREAMLIT : GARDER TOUJOURS VISIBLE (bouton sidebar) ===== */
-/* Ne JAMAIS cacher le header, sinon le bouton pour ouvrir la sidebar disparaît */
+/* ===== NE PAS CACHER LE HEADER ===== */
 header[data-testid="stHeader"] {{
     background: transparent !important;
-    height: auto !important;
+    z-index: 100 !important;
 }}
 
-/* ===== BOUTON POUR OUVRIR/FERMER LA SIDEBAR ===== */
-button[data-testid="stSidebarCollapsedControl"],
-[data-testid="collapsedControl"],
-[data-testid="stExpandSidebarButton"],
-button[kind="header"] {{
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    color: {v['text_main']} !important;
-    background: rgba(99,102,241,0.85) !important;
-    border-radius: 8px !important;
-    padding: 8px 10px !important;
-    margin: 8px !important;
-    z-index: 999999 !important;
-    pointer-events: auto !important;
-}}
-
-button[data-testid="stSidebarCollapsedControl"] svg,
-[data-testid="collapsedControl"] svg {{
-    fill: white !important;
-    color: white !important;
-}}
-
-/* ===== MASQUER MENU + FOOTER ===== */
-#MainMenu {{ display: none !important; visibility: hidden !important; }}
-footer {{ display: none !important; visibility: hidden !important; }}
-div[data-testid="stDecoration"] {{ display: none !important; }}
-
-/* Masquer UNIQUEMENT les boutons de déploiement et statut (PAS le header complet) */
+/* ===== MASQUER QUE LES BOUTONS CLOUD (pas le hamburger) ===== */
+[data-testid="stAppDeployButton"],
+[data-testid="stManageAppButton"],
 .stAppDeployButton,
 .stDeployButton,
-[data-testid="stAppDeployButton"],
-div[data-testid="stToolbar"] {{ display: none !important; }}
+[data-testid="stToolbar"],
+[data-testid="stToolbarActions"] {{
+    display: none !important;
+}}
 
-/* Padding du contenu */
+/* ===== CACHER LE HAMBURGER PAR DÉFAUT DE STREAMLIT ===== */
+/* On le remplace par notre propre bouton */
+[data-testid="collapsedControl"],
+button[data-testid="stSidebarCollapsedControl"],
+button[kind="headerNoPadding"] {{
+    display: none !important;
+    visibility: hidden !important;
+}}
+
+/* ===== CACHER LE BOUTON DE FERMETURE INTERNE DE LA SIDEBAR ===== */
+section[data-testid="stSidebar"] button[kind="header"] {{
+    display: none !important;
+}}
+
+#MainMenu {{ display: none !important; }}
+footer {{ display: none !important; }}
+div[data-testid="stDecoration"] {{ display: none !important; }}
+
 div[data-testid="stAppViewContainer"] {{ padding-top: 0 !important; }}
 .block-container, div[data-testid="stMainBlockContainer"] {{ padding-top: 1.5rem !important; }}
 
@@ -220,6 +212,7 @@ div[data-baseweb="base-input"] input {{
     color: {v['label_color']} !important;
 }}
 
+/* ===== SIDEBAR ===== */
 section[data-testid="stSidebar"] {{
     background: {v['sidebar_bg']} !important;
     border-right: 1px solid {v['sidebar_border']} !important;
@@ -492,28 +485,6 @@ section[data-testid="stFileUploadDropzone"] svg {{ fill: {v['text_muted']} !impo
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }}
-
-/* ===== MASQUER BOUTONS STREAMLIT CLOUD (Manage App / Deploy) ===== */
-[data-testid="stAppDeployButton"],
-[data-testid="stManageAppButton"],
-.stAppDeployButton,
-.stDeployButton,
-[data-testid="stStatusWidget"],
-iframe[title="streamlit_app_manage_button"],
-div[class*="ManageApp"],
-button[title*="Manage"],
-[aria-label*="Manage"] {{
-    display: none !important;
-    visibility: hidden !important;
-    height: 0 !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-}}
-
-.viewerBadge_container__1QSob,
-.viewerBadge_link__1S137 {{
-    display: none !important;
-}}
 </style>
 """
 st.markdown(get_css(st.session_state.theme), unsafe_allow_html=True)
@@ -523,53 +494,102 @@ st.markdown(get_css(st.session_state.theme), unsafe_allow_html=True)
 # ======================
 st.markdown("""
 <script>
-function killStreamlitCloudBar() {
+// Masquer les boutons Streamlit Cloud
+function killCloudBar() {
     const selectors = [
         '[data-testid="stAppDeployButton"]',
         '[data-testid="stManageAppButton"]',
-        '[data-testid="stStatusWidget"]',
-        '[data-testid="stMainMenu"]',
+        '[data-testid="stToolbar"]',
         '.stAppDeployButton',
         '.stDeployButton',
         '#MainMenu',
         'footer',
-        '[data-testid="stToolbar"]',
+        '[data-testid="stToolbarActions"]',
         '.viewerBadge_container__1QSob',
-        '.viewerBadge_link__1S137',
-        'iframe[title="streamlit_app_manage_button"]'
+        '.viewerBadge_link__1S137'
     ];
     selectors.forEach(sel => {
         document.querySelectorAll(sel).forEach(el => {
             el.style.display = 'none';
             el.style.visibility = 'hidden';
             el.style.height = '0';
-            el.style.minHeight = '0';
             el.style.opacity = '0';
-            el.style.pointerEvents = 'none';
         });
     });
-
-    // Supprimer les éléments cliquables flottants en bas à droite
-    document.querySelectorAll('a[href*="share.streamlit.io"]').forEach(el => {
-        el.style.display = 'none';
-    });
-
-    // Masquer tout iframe qui viendrait de Streamlit Cloud
-    document.querySelectorAll('iframe').forEach(el => {
-        if (el.src && el.src.includes('streamlit')) {
-            // On ne touche pas aux iframes de contenu principal
-            if (el.title && el.title.includes('manage')) {
-                el.style.display = 'none';
-            }
-        }
-    });
 }
-killStreamlitCloudBar();
-setInterval(killStreamlitCloudBar, 400);
+killCloudBar();
+setInterval(killCloudBar, 500);
 </script>
 """, unsafe_allow_html=True)
+# ======================
+# BOUTON FLOTTANT POUR OUVRIR/FERMER LA SIDEBAR
+# ======================
+st.markdown("""
+<button id="custom-sidebar-toggle" onclick="toggleSidebar()" title="Ouvrir/Fermer le menu">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+</button>
 
+<style>
+#custom-sidebar-toggle {
+    position: fixed !important;
+    top: 12px !important;
+    left: 12px !important;
+    z-index: 999999 !important;
+    width: 42px !important;
+    height: 42px !important;
+    border-radius: 10px !important;
+    border: none !important;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+    color: white !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 4px 12px rgba(99,102,241,0.4) !important;
+    transition: all 0.2s ease !important;
+    padding: 0 !important;
+}
+#custom-sidebar-toggle:hover {
+    transform: scale(1.05) !important;
+    box-shadow: 0 6px 18px rgba(99,102,241,0.6) !important;
+}
+#custom-sidebar-toggle:active {
+    transform: scale(0.95) !important;
+}
+</style>
 
+<script>
+function toggleSidebar() {
+    // Streamlit utilise ces sélecteurs pour la sidebar
+    const sidebar = document.querySelector('section[data-testid="stSidebar"]');
+    const collapseBtn = document.querySelector('[data-testid="collapsedControl"]') 
+                     || document.querySelector('button[data-testid="stSidebarCollapsedControl"]')
+                     || document.querySelector('button[kind="headerNoPadding"]');
+    
+    if (collapseBtn) {
+        collapseBtn.click();
+    } else {
+        // Fallback : toggle manuel de la sidebar via CSS
+        if (sidebar) {
+            const isCollapsed = sidebar.getAttribute('aria-expanded') === 'false'
+                             || sidebar.style.transform === 'translateX(-100%)'
+                             || window.getComputedStyle(sidebar).marginLeft === '-300px';
+            if (isCollapsed) {
+                sidebar.style.transform = 'translateX(0)';
+                sidebar.style.marginLeft = '0';
+            } else {
+                sidebar.style.transform = 'translateX(-100%)';
+                sidebar.style.marginLeft = '-300px';
+            }
+        }
+    }
+}
+</script>
+""", unsafe_allow_html=True)
 def svg_tag(name, size=18, color="currentColor"):
     return icon(name, size=size, color=color)
 
