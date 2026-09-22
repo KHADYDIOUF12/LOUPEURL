@@ -328,19 +328,81 @@ section[data-testid="stSidebar"] > div {{ padding-top: 0 !important; }}
     border: 1px solid {v['border']} !important;
 }}
 
+/* ===== SELECTBOX (input) ===== */
 .stSelectbox > div > div {{
     background-color: {v['input_bg']} !important;
     border-radius: 10px !important;
     color: {v['input_text']} !important;
 }}
-.stSelectbox > div > div > div {{ color: {v['input_text']} !important; }}
+.stSelectbox > div > div > div {{
+    color: {v['input_text']} !important;
+}}
 div[data-baseweb="select"] > div {{
     background-color: {v['input_bg']} !important;
     color: {v['input_text']} !important;
     border-color: {v['input_border']} !important;
 }}
 
+/* ===== SELECTBOX (dropdown ouvert) ===== */
+div[data-baseweb="popover"] {{
+    background-color: {v['input_bg']} !important;
+}}
+div[data-baseweb="popover"] > div {{
+    background-color: {v['input_bg']} !important;
+}}
+ul[data-baseweb="menu"],
+div[data-baseweb="popover"] ul,
+[role="listbox"] {{
+    background-color: {v['input_bg']} !important;
+    border: 1px solid {v['input_border']} !important;
+    border-radius: 10px !important;
+}}
+li[role="option"],
+[role="option"] {{
+    background-color: {v['input_bg']} !important;
+    color: {v['input_text']} !important;
+    font-weight: 500 !important;
+}}
+li[role="option"]:hover,
+[role="option"]:hover {{
+    background-color: rgba(99,102,241,0.15) !important;
+    color: {v['input_text']} !important;
+}}
+li[aria-selected="true"],
+[role="option"][aria-selected="true"] {{
+    background-color: rgba(99,102,241,0.25) !important;
+    color: {v['input_text']} !important;
+}}
+div[data-baseweb="popover"] div,
+ul[data-baseweb="menu"] div,
+[role="listbox"] div {{
+    color: {v['input_text']} !important;
+    background-color: transparent !important;
+}}
+
+/* ===== RADIO / CHECKBOX ===== */
+.stRadio label,
+.stRadio > div > label > div,
+.stCheckbox label {{
+    color: {v['text_main']} !important;
+}}
+
+/* ===== FILE UPLOADER ===== */
+.stFileUploader, .stFileUploader * {{
+    color: {v['text_main']} !important;
+}}
+section[data-testid="stFileUploadDropzone"] {{
+    background-color: {v['input_bg']} !important;
+    border: 1px dashed {v['input_border']} !important;
+    border-radius: 10px !important;
+}}
+section[data-testid="stFileUploadDropzone"] svg {{
+    fill: {v['text_muted']} !important;
+}}
+
+/* ===== DATAFRAME ===== */
 .stDataFrame {{ border-radius: 12px !important; overflow: hidden; }}
+.stDataFrame, .stDataFrame * {{ color: {v['text_main']} !important; }}
 
 ::-webkit-scrollbar {{ width: 5px; }}
 ::-webkit-scrollbar-thumb {{ background: #6366f1; border-radius: 4px; }}
@@ -728,7 +790,6 @@ def generer_pdf_rapport(url, est_mal, proba, date_str, features=None, niveau="")
         "d'URL malveillantes base sur le Machine Learning. Les resultats fournis sont "
         "indicatifs et ne remplacent pas une analyse de securite approfondie.")
 
-    # Compatible fpdf2 toutes versions
     output = pdf.output(dest='S')
     if isinstance(output, str):
         return output.encode('latin-1', errors='ignore')
