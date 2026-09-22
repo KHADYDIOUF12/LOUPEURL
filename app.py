@@ -95,7 +95,42 @@ def get_css(theme):
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-header[data-testid="stHeader"] {{ display: none !important; height: 0 !important; visibility: hidden !important; }}
+/* Masquer le header sur DESKTOP uniquement */
+@media (min-width: 769px) {{
+    header[data-testid="stHeader"] {{
+        display: none !important;
+        height: 0 !important;
+        visibility: hidden !important;
+    }}
+}}
+
+/* Sur MOBILE : garder le header pour le bouton hamburger */
+@media (max-width: 768px) {{
+    header[data-testid="stHeader"] {{
+        display: block !important;
+        visibility: visible !important;
+        height: auto !important;
+        background: transparent !important;
+    }}
+    
+    /* Bouton hamburger visible */
+    button[data-testid="stSidebarCollapsedControl"],
+    [data-testid="collapsedControl"] {{
+        display: flex !important;
+        visibility: visible !important;
+        color: #ffffff !important;
+        background: rgba(99,102,241,0.9) !important;
+        border-radius: 8px !important;
+        padding: 8px !important;
+        margin: 8px !important;
+    }}
+    
+    /* Sidebar ouverte sur mobile */
+    section[data-testid="stSidebar"] {{
+        width: 280px !important;
+        min-width: 280px !important;
+    }}
+}}
 #MainMenu {{ display: none !important; visibility: hidden !important; }}
 footer {{ display: none !important; visibility: hidden !important; }}
 div[data-testid="stDecoration"] {{ display: none !important; }}
@@ -489,6 +524,45 @@ section[data-testid="stFileUploadDropzone"] svg {{
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }}
+/* ===== MASQUER LA BARRE STREAMLIT CLOUD ===== */
+[data-testid="stAppDeployButton"],
+[data-testid="stManageAppButton"],
+.stAppDeployButton,
+.stDeployButton,
+button[kind="header"],
+[data-testid="baseButton-headerNoPadding"],
+[data-testid="stStatusWidget"],
+.stStatusWidget,
+iframe[title="streamlit_app_manage_button"],
+div[class*="ManageApp"],
+button[title*="Manage"],
+[aria-label*="Manage"],
+[data-testid="stHeaderActionElements"] {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    width: 0 !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* Masquer le menu profil en bas à droite */
+[data-testid="stBottom"] > div:last-child,
+footer[data-testid="stBottom"] {
+    display: none !important;
+}
+
+/* Cacher l'avatar propriétaire si visible */
+[data-testid="stUserMenu"],
+[data-testid="stProfileButton"] {
+    display: none !important;
+}
+
+/* Fallback : cacher le coin inférieur droit */
+.viewerBadge_container__1QSob,
+.viewerBadge_link__1S137 {
+    display: none !important;
+}
 </style>
 """
 st.markdown(get_css(st.session_state.theme), unsafe_allow_html=True)
