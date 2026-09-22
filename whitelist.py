@@ -25,7 +25,7 @@ DOMAINES_FIABLES = {
     "yahoo.com", "bing.com", "wikimedia.org", "adobe.com",
     "dropbox.com", "netflix.com", "spotify.com", "paypal.com",
     "ebay.com", "cloudflare.com", "gitlab.com", "bitbucket.org",
-    "python.org", "npmjs.com", "digitalocean.com", "medium.com",
+    "python.org", "npmjs.com", "digitalocean.com", "medium.com", "orange.sn", "free.fr"
 }
 
 
