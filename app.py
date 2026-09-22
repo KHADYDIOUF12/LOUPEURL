@@ -728,7 +728,10 @@ def generer_pdf_rapport(url, est_mal, proba, date_str, features=None, niveau="")
         "d'URL malveillantes base sur le Machine Learning. Les resultats fournis sont "
         "indicatifs et ne remplacent pas une analyse de securite approfondie.")
 
-    return bytes(pdf.output())
+     output = pdf.output(dest='S')
+    if isinstance(output, str):
+        return output.encode('latin-1', errors='ignore')
+    return bytes(output)
 
 
 def appeler_api_articles():
