@@ -1,0 +1,25 @@
+# Environnement virtuel
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Ne PAS envoyer les gros fichiers (on les mettra sur Drive/LFS plus tard)
+dataset/
+features/
+images/
+modeles/
+*.pkl
+*.zip
+
+# Config locale
+.streamlit/secrets.toml
+.env
+node_modules/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+.DS_Store
+*.log

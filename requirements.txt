@@ -1,0 +1,15 @@
+pandas
+numpy
+matplotlib
+seaborn
+scikit-learn
+joblib
+streamlit
+requests
+kagglehub
+streamlit
+pandas
+scikit-learn==1.8.0
+joblib
+fpdf
+requests
