@@ -95,69 +95,21 @@ def get_css(theme):
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-/* ===== HEADER : LAISSER VISIBLE POUR LE BOUTON SIDEBAR ===== */
-header[data-testid="stHeader"] {{
-    background: transparent !important;
-    height: auto !important;
-    z-index: 999 !important;
-}}
+/* ===== HEADER STREAMLIT : TOTALEMENT INTACT (burger préservé) ===== */
+/* On NE touche PAS au header, au burger, ni à la sidebar-toggle */
 
-/* ===== BOUTON POUR OUVRIR/FERMER LA SIDEBAR (stylisé en violet) ===== */
-/* Streamlit garde son bouton natif, on le RESTYLE simplement */
-button[data-testid="stSidebarCollapsedControl"],
-[data-testid="collapsedControl"],
-button[kind="headerNoPadding"] {{
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
-    border-radius: 10px !important;
-    padding: 8px 10px !important;
-    margin: 10px !important;
-    border: none !important;
-    box-shadow: 0 4px 12px rgba(99,102,241,0.4) !important;
-    z-index: 999999 !important;
-    cursor: pointer !important;
-    transition: all 0.2s ease !important;
-}}
-
-button[data-testid="stSidebarCollapsedControl"]:hover,
-[data-testid="collapsedControl"]:hover {{
-    transform: scale(1.05) !important;
-    box-shadow: 0 6px 18px rgba(99,102,241,0.6) !important;
-}}
-
-/* Icône du bouton en blanc */
-button[data-testid="stSidebarCollapsedControl"] svg,
-[data-testid="collapsedControl"] svg,
-button[kind="headerNoPadding"] svg {{
-    fill: white !important;
-    color: white !important;
-    width: 20px !important;
-    height: 20px !important;
-}}
-
-/* ===== MASQUER UNIQUEMENT LES BOUTONS CLOUD (pas le header) ===== */
+/* ===== MASQUER UNIQUEMENT LES BOUTONS CLOUD ===== */
 [data-testid="stAppDeployButton"],
 [data-testid="stManageAppButton"],
 .stAppDeployButton,
 .stDeployButton,
-[data-testid="stToolbar"],
 [data-testid="stToolbarActions"] {{
-    display: none !important;
-}}
-
-/* Masquer le bouton de fermeture DANS la sidebar (on garde l'ouverture externe) */
-section[data-testid="stSidebar"] button[kind="header"] {{
     display: none !important;
 }}
 
 #MainMenu {{ display: none !important; }}
 footer {{ display: none !important; }}
 div[data-testid="stDecoration"] {{ display: none !important; }}
-
-div[data-testid="stAppViewContainer"] {{ padding-top: 0 !important; }}
-.block-container, div[data-testid="stMainBlockContainer"] {{ padding-top: 1.5rem !important; }}
 
 html, body, [class*="css"] {{ font-family: 'Inter', sans-serif; }}
 
@@ -515,34 +467,6 @@ section[data-testid="stFileUploadDropzone"] svg {{ fill: {v['text_muted']} !impo
 </style>
 """
 st.markdown(get_css(st.session_state.theme), unsafe_allow_html=True)
-
-# ======================
-# JS : Masquer uniquement les boutons Streamlit Cloud
-# ======================
-st.markdown("""
-<script>
-function killCloudBar() {
-    const selectors = [
-        '[data-testid="stAppDeployButton"]',
-        '[data-testid="stManageAppButton"]',
-        '[data-testid="stToolbar"]',
-        '[data-testid="stToolbarActions"]',
-        '.stAppDeployButton',
-        '.stDeployButton',
-        '#MainMenu'
-    ];
-    selectors.forEach(sel => {
-        document.querySelectorAll(sel).forEach(el => {
-            el.style.display = 'none';
-            el.style.visibility = 'hidden';
-            el.style.height = '0';
-        });
-    });
-}
-killCloudBar();
-setInterval(killCloudBar, 500);
-</script>
-""", unsafe_allow_html=True)
 
 
 def svg_tag(name, size=18, color="currentColor"):
