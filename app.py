@@ -95,16 +95,19 @@ def get_css(theme):
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-/* Masquer le header sur DESKTOP uniquement */
+/* ===== MASQUER LE HEADER SUR DESKTOP UNIQUEMENT ===== */
 @media (min-width: 769px) {{
     header[data-testid="stHeader"] {{
         display: none !important;
         height: 0 !important;
         visibility: hidden !important;
     }}
+    .stApp > header {{ display: none !important; height: 0 !important; }}
+    div[data-testid="stAppViewContainer"] {{ padding-top: 0 !important; }}
+    .block-container, div[data-testid="stMainBlockContainer"] {{ padding-top: 1.5rem !important; }}
 }}
 
-/* Sur MOBILE : garder le header pour le bouton hamburger */
+/* ===== SUR MOBILE : GARDER LE HEADER POUR LE BOUTON HAMBURGER ===== */
 @media (max-width: 768px) {{
     header[data-testid="stHeader"] {{
         display: block !important;
@@ -113,9 +116,9 @@ def get_css(theme):
         background: transparent !important;
     }}
     
-    /* Bouton hamburger visible */
     button[data-testid="stSidebarCollapsedControl"],
-    [data-testid="collapsedControl"] {{
+    [data-testid="collapsedControl"],
+    [data-testid="stExpandSidebarButton"] {{
         display: flex !important;
         visibility: visible !important;
         color: #ffffff !important;
@@ -123,14 +126,15 @@ def get_css(theme):
         border-radius: 8px !important;
         padding: 8px !important;
         margin: 8px !important;
+        z-index: 9999 !important;
     }}
     
-    /* Sidebar ouverte sur mobile */
     section[data-testid="stSidebar"] {{
         width: 280px !important;
         min-width: 280px !important;
     }}
 }}
+
 #MainMenu {{ display: none !important; visibility: hidden !important; }}
 footer {{ display: none !important; visibility: hidden !important; }}
 div[data-testid="stDecoration"] {{ display: none !important; }}
@@ -144,9 +148,6 @@ div[data-testid="stMainMenu"] {{ display: none !important; }}
 button[kind="header"] {{ display: none !important; }}
 .stDeployButton {{ display: none !important; }}
 [data-testid="baseButton-headerNoPadding"] {{ display: none !important; }}
-.stApp > header {{ display: none !important; height: 0 !important; }}
-div[data-testid="stAppViewContainer"] {{ padding-top: 0 !important; }}
-.block-container, div[data-testid="stMainBlockContainer"] {{ padding-top: 1.5rem !important; }}
 
 html, body, [class*="css"] {{ font-family: 'Inter', sans-serif; }}
 
@@ -524,6 +525,7 @@ section[data-testid="stFileUploadDropzone"] svg {{
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }}
+
 /* ===== MASQUER LA BARRE STREAMLIT CLOUD ===== */
 [data-testid="stAppDeployButton"],
 [data-testid="stManageAppButton"],
@@ -537,47 +539,48 @@ iframe[title="streamlit_app_manage_button"],
 div[class*="ManageApp"],
 button[title*="Manage"],
 [aria-label*="Manage"],
-[data-testid="stHeaderActionElements"] {
+[data-testid="stHeaderActionElements"] {{
     display: none !important;
     visibility: hidden !important;
     height: 0 !important;
     width: 0 !important;
     opacity: 0 !important;
     pointer-events: none !important;
-}
+}}
 
-/* Masquer le menu profil en bas à droite */
 [data-testid="stBottom"] > div:last-child,
-footer[data-testid="stBottom"] {
+footer[data-testid="stBottom"] {{
     display: none !important;
-}
+}}
 
-/* Cacher l'avatar propriétaire si visible */
 [data-testid="stUserMenu"],
-[data-testid="stProfileButton"] {
+[data-testid="stProfileButton"] {{
     display: none !important;
-}
+}}
 
-/* Fallback : cacher le coin inférieur droit */
 .viewerBadge_container__1QSob,
-.viewerBadge_link__1S137 {
+.viewerBadge_link__1S137 {{
     display: none !important;
-}
+}}
 </style>
 """
 st.markdown(get_css(st.session_state.theme), unsafe_allow_html=True)
 
 # ======================
-# JS : Suppression de la barre Streamlit
+# JS : Suppression de la barre Streamlit (desktop uniquement)
 # ======================
 st.markdown("""
 <script>
 function killStreamlitBar() {
+    // Ne rien faire sur mobile (garder le bouton hamburger)
+    if (window.innerWidth <= 768) return;
+
     const selectors = [
         'header[data-testid="stHeader"]',
         'header.stAppHeader',
         '[data-testid="stToolbar"]',
         '[data-testid="stAppDeployButton"]',
+        '[data-testid="stManageAppButton"]',
         '[data-testid="stStatusWidget"]',
         '[data-testid="stMainMenu"]',
         '.stAppDeployButton',
@@ -591,14 +594,13 @@ function killStreamlitBar() {
             el.style.visibility = 'hidden';
             el.style.height = '0';
             el.style.minHeight = '0';
-            el.remove();
         });
     });
     const block = document.querySelector('.block-container') || document.querySelector('[data-testid="stMainBlockContainer"]');
     if (block) block.style.paddingTop = '1.5rem';
 }
 killStreamlitBar();
-setInterval(killStreamlitBar, 250);
+setInterval(killStreamlitBar, 500);
 </script>
 """, unsafe_allow_html=True)
 
