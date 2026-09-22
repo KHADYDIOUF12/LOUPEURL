@@ -95,59 +95,50 @@ def get_css(theme):
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-/* ===== MASQUER LE HEADER SUR DESKTOP UNIQUEMENT ===== */
-@media (min-width: 769px) {{
-    header[data-testid="stHeader"] {{
-        display: none !important;
-        height: 0 !important;
-        visibility: hidden !important;
-    }}
-    .stApp > header {{ display: none !important; height: 0 !important; }}
-    div[data-testid="stAppViewContainer"] {{ padding-top: 0 !important; }}
-    .block-container, div[data-testid="stMainBlockContainer"] {{ padding-top: 1.5rem !important; }}
+/* ===== HEADER STREAMLIT : GARDER TOUJOURS VISIBLE (bouton sidebar) ===== */
+/* Ne JAMAIS cacher le header, sinon le bouton pour ouvrir la sidebar disparaît */
+header[data-testid="stHeader"] {{
+    background: transparent !important;
+    height: auto !important;
 }}
 
-/* ===== SUR MOBILE : GARDER LE HEADER POUR LE BOUTON HAMBURGER ===== */
-@media (max-width: 768px) {{
-    header[data-testid="stHeader"] {{
-        display: block !important;
-        visibility: visible !important;
-        height: auto !important;
-        background: transparent !important;
-    }}
-    
-    button[data-testid="stSidebarCollapsedControl"],
-    [data-testid="collapsedControl"],
-    [data-testid="stExpandSidebarButton"] {{
-        display: flex !important;
-        visibility: visible !important;
-        color: #ffffff !important;
-        background: rgba(99,102,241,0.9) !important;
-        border-radius: 8px !important;
-        padding: 8px !important;
-        margin: 8px !important;
-        z-index: 9999 !important;
-    }}
-    
-    section[data-testid="stSidebar"] {{
-        width: 280px !important;
-        min-width: 280px !important;
-    }}
+/* ===== BOUTON POUR OUVRIR/FERMER LA SIDEBAR ===== */
+button[data-testid="stSidebarCollapsedControl"],
+[data-testid="collapsedControl"],
+[data-testid="stExpandSidebarButton"],
+button[kind="header"] {{
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    color: {v['text_main']} !important;
+    background: rgba(99,102,241,0.85) !important;
+    border-radius: 8px !important;
+    padding: 8px 10px !important;
+    margin: 8px !important;
+    z-index: 999999 !important;
+    pointer-events: auto !important;
 }}
 
+button[data-testid="stSidebarCollapsedControl"] svg,
+[data-testid="collapsedControl"] svg {{
+    fill: white !important;
+    color: white !important;
+}}
+
+/* ===== MASQUER MENU + FOOTER ===== */
 #MainMenu {{ display: none !important; visibility: hidden !important; }}
 footer {{ display: none !important; visibility: hidden !important; }}
 div[data-testid="stDecoration"] {{ display: none !important; }}
+
+/* Masquer UNIQUEMENT les boutons de déploiement et statut (PAS le header complet) */
+.stAppDeployButton,
+.stDeployButton,
+[data-testid="stAppDeployButton"],
 div[data-testid="stToolbar"] {{ display: none !important; }}
-div[data-testid="stToolbarActions"] {{ display: none !important; }}
-div[data-testid="stAppToolbar"] {{ display: none !important; }}
-div[data-testid="stStatusWidget"] {{ display: none !important; }}
-div[data-testid="stMainMenu"] {{ display: none !important; }}
-.stAppDeployButton {{ display: none !important; }}
-[data-testid="stAppDeployButton"] {{ display: none !important; }}
-button[kind="header"] {{ display: none !important; }}
-.stDeployButton {{ display: none !important; }}
-[data-testid="baseButton-headerNoPadding"] {{ display: none !important; }}
+
+/* Padding du contenu */
+div[data-testid="stAppViewContainer"] {{ padding-top: 0 !important; }}
+.block-container, div[data-testid="stMainBlockContainer"] {{ padding-top: 1.5rem !important; }}
 
 html, body, [class*="css"] {{ font-family: 'Inter', sans-serif; }}
 
@@ -166,9 +157,7 @@ div[data-testid="stMarkdownContainer"] h5 {{
     color: {v['title_color']} !important;
 }}
 
-p, span, div, label {{
-    color: {v['text_main']};
-}}
+p, span, div, label {{ color: {v['text_main']}; }}
 .stMarkdown p {{ color: {v['text_main']} !important; }}
 
 .stTextInput input,
@@ -364,28 +353,20 @@ section[data-testid="stSidebar"] > div {{ padding-top: 0 !important; }}
     border: 1px solid {v['border']} !important;
 }}
 
-/* ===== SELECTBOX (input) ===== */
 .stSelectbox > div > div {{
     background-color: {v['input_bg']} !important;
     border-radius: 10px !important;
     color: {v['input_text']} !important;
 }}
-.stSelectbox > div > div > div {{
-    color: {v['input_text']} !important;
-}}
+.stSelectbox > div > div > div {{ color: {v['input_text']} !important; }}
 div[data-baseweb="select"] > div {{
     background-color: {v['input_bg']} !important;
     color: {v['input_text']} !important;
     border-color: {v['input_border']} !important;
 }}
 
-/* ===== SELECTBOX (dropdown ouvert) ===== */
-div[data-baseweb="popover"] {{
-    background-color: {v['input_bg']} !important;
-}}
-div[data-baseweb="popover"] > div {{
-    background-color: {v['input_bg']} !important;
-}}
+div[data-baseweb="popover"] {{ background-color: {v['input_bg']} !important; }}
+div[data-baseweb="popover"] > div {{ background-color: {v['input_bg']} !important; }}
 ul[data-baseweb="menu"],
 div[data-baseweb="popover"] ul,
 [role="listbox"] {{
@@ -393,19 +374,16 @@ div[data-baseweb="popover"] ul,
     border: 1px solid {v['input_border']} !important;
     border-radius: 10px !important;
 }}
-li[role="option"],
-[role="option"] {{
+li[role="option"], [role="option"] {{
     background-color: {v['input_bg']} !important;
     color: {v['input_text']} !important;
     font-weight: 500 !important;
 }}
-li[role="option"]:hover,
-[role="option"]:hover {{
+li[role="option"]:hover, [role="option"]:hover {{
     background-color: rgba(99,102,241,0.15) !important;
     color: {v['input_text']} !important;
 }}
-li[aria-selected="true"],
-[role="option"][aria-selected="true"] {{
+li[aria-selected="true"], [role="option"][aria-selected="true"] {{
     background-color: rgba(99,102,241,0.25) !important;
     color: {v['input_text']} !important;
 }}
@@ -416,27 +394,18 @@ ul[data-baseweb="menu"] div,
     background-color: transparent !important;
 }}
 
-/* ===== RADIO / CHECKBOX ===== */
 .stRadio label,
 .stRadio > div > label > div,
-.stCheckbox label {{
-    color: {v['text_main']} !important;
-}}
+.stCheckbox label {{ color: {v['text_main']} !important; }}
 
-/* ===== FILE UPLOADER ===== */
-.stFileUploader, .stFileUploader * {{
-    color: {v['text_main']} !important;
-}}
+.stFileUploader, .stFileUploader * {{ color: {v['text_main']} !important; }}
 section[data-testid="stFileUploadDropzone"] {{
     background-color: {v['input_bg']} !important;
     border: 1px dashed {v['input_border']} !important;
     border-radius: 10px !important;
 }}
-section[data-testid="stFileUploadDropzone"] svg {{
-    fill: {v['text_muted']} !important;
-}}
+section[data-testid="stFileUploadDropzone"] svg {{ fill: {v['text_muted']} !important; }}
 
-/* ===== DATAFRAME ===== */
 .stDataFrame {{ border-radius: 12px !important; overflow: hidden; }}
 .stDataFrame, .stDataFrame * {{ color: {v['text_main']} !important; }}
 
@@ -465,9 +434,7 @@ section[data-testid="stFileUploadDropzone"] svg {{
     from {{ opacity: 0; }}
     to {{ opacity: 1; }}
 }}
-.email-success-animation {{
-    animation: slideInUp 0.6s ease-out, pulseGlow 1.5s ease-in-out;
-}}
+.email-success-animation {{ animation: slideInUp 0.6s ease-out, pulseGlow 1.5s ease-in-out; }}
 .checkmark-animation {{ animation: checkmark 0.6s ease-out; }}
 .fade-in {{ animation: fadeIn 0.5s ease-out; }}
 
@@ -526,36 +493,21 @@ section[data-testid="stFileUploadDropzone"] svg {{
     letter-spacing: 0.5px;
 }}
 
-/* ===== MASQUER LA BARRE STREAMLIT CLOUD ===== */
+/* ===== MASQUER BOUTONS STREAMLIT CLOUD (Manage App / Deploy) ===== */
 [data-testid="stAppDeployButton"],
 [data-testid="stManageAppButton"],
 .stAppDeployButton,
 .stDeployButton,
-button[kind="header"],
-[data-testid="baseButton-headerNoPadding"],
 [data-testid="stStatusWidget"],
-.stStatusWidget,
 iframe[title="streamlit_app_manage_button"],
 div[class*="ManageApp"],
 button[title*="Manage"],
-[aria-label*="Manage"],
-[data-testid="stHeaderActionElements"] {{
+[aria-label*="Manage"] {{
     display: none !important;
     visibility: hidden !important;
     height: 0 !important;
-    width: 0 !important;
     opacity: 0 !important;
     pointer-events: none !important;
-}}
-
-[data-testid="stBottom"] > div:last-child,
-footer[data-testid="stBottom"] {{
-    display: none !important;
-}}
-
-[data-testid="stUserMenu"],
-[data-testid="stProfileButton"] {{
-    display: none !important;
 }}
 
 .viewerBadge_container__1QSob,
@@ -567,18 +519,12 @@ footer[data-testid="stBottom"] {{
 st.markdown(get_css(st.session_state.theme), unsafe_allow_html=True)
 
 # ======================
-# JS : Suppression de la barre Streamlit (desktop uniquement)
+# JS : Masquer la barre Streamlit Cloud (renforcé)
 # ======================
 st.markdown("""
 <script>
-function killStreamlitBar() {
-    // Ne rien faire sur mobile (garder le bouton hamburger)
-    if (window.innerWidth <= 768) return;
-
+function killStreamlitCloudBar() {
     const selectors = [
-        'header[data-testid="stHeader"]',
-        'header.stAppHeader',
-        '[data-testid="stToolbar"]',
         '[data-testid="stAppDeployButton"]',
         '[data-testid="stManageAppButton"]',
         '[data-testid="stStatusWidget"]',
@@ -586,7 +532,11 @@ function killStreamlitBar() {
         '.stAppDeployButton',
         '.stDeployButton',
         '#MainMenu',
-        'footer'
+        'footer',
+        '[data-testid="stToolbar"]',
+        '.viewerBadge_container__1QSob',
+        '.viewerBadge_link__1S137',
+        'iframe[title="streamlit_app_manage_button"]'
     ];
     selectors.forEach(sel => {
         document.querySelectorAll(sel).forEach(el => {
@@ -594,13 +544,28 @@ function killStreamlitBar() {
             el.style.visibility = 'hidden';
             el.style.height = '0';
             el.style.minHeight = '0';
+            el.style.opacity = '0';
+            el.style.pointerEvents = 'none';
         });
     });
-    const block = document.querySelector('.block-container') || document.querySelector('[data-testid="stMainBlockContainer"]');
-    if (block) block.style.paddingTop = '1.5rem';
+
+    // Supprimer les éléments cliquables flottants en bas à droite
+    document.querySelectorAll('a[href*="share.streamlit.io"]').forEach(el => {
+        el.style.display = 'none';
+    });
+
+    // Masquer tout iframe qui viendrait de Streamlit Cloud
+    document.querySelectorAll('iframe').forEach(el => {
+        if (el.src && el.src.includes('streamlit')) {
+            // On ne touche pas aux iframes de contenu principal
+            if (el.title && el.title.includes('manage')) {
+                el.style.display = 'none';
+            }
+        }
+    });
 }
-killStreamlitBar();
-setInterval(killStreamlitBar, 500);
+killStreamlitCloudBar();
+setInterval(killStreamlitCloudBar, 400);
 </script>
 """, unsafe_allow_html=True)
 
