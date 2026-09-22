@@ -1,0 +1,2 @@
+modeles/best_model.pkl filter=lfs diff=lfs merge=lfs -text
+modeles/scaler.pkl filter=lfs diff=lfs merge=lfs -text
