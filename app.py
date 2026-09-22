@@ -729,9 +729,9 @@ def generer_pdf_rapport(url, est_mal, proba, date_str, features=None, niveau="")
         "indicatifs et ne remplacent pas une analyse de securite approfondie.")
 
      output = pdf.output(dest='S')
-    if isinstance(output, str):
+     if isinstance(output, str):
         return output.encode('latin-1', errors='ignore')
-    return bytes(output)
+     return bytes(output)
 
 
 def appeler_api_articles():
