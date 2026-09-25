@@ -39,14 +39,14 @@ def get_logo_base64():
 LOGO_B64 = get_logo_base64()
 
 # ======================
-# ÉTAT DE SESSION
+# ÉTAT DE SESSION — MODE CLAIR PAR DÉFAUT
 # ======================
 if "page" not in st.session_state:
     st.session_state.page = "Accueil"
 if "historique" not in st.session_state:
     st.session_state.historique = []
 if "theme" not in st.session_state:
-    st.session_state.theme = "dark"
+    st.session_state.theme = "light"   # ← MODE CLAIR PAR DÉFAUT
 
 # ======================
 # CSS
@@ -95,9 +95,6 @@ def get_css(theme):
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-/* ===== HEADER STREAMLIT : TOTALEMENT INTACT (burger préservé) ===== */
-/* On NE touche PAS au header, au burger, ni à la sidebar-toggle */
-
 /* ===== MASQUER UNIQUEMENT LES BOUTONS CLOUD ===== */
 [data-testid="stAppDeployButton"],
 [data-testid="stManageAppButton"],
@@ -107,6 +104,178 @@ def get_css(theme):
     display: none !important;
 }}
 
+/* ===== HEADER TRANSPARENT MAIS AVEC HAUTEUR ===== */
+header[data-testid="stHeader"] {{
+    background: transparent !important;
+    background-color: transparent !important;
+    height: 3.5rem !important;
+    min-height: 3.5rem !important;
+    box-shadow: none !important;
+}}
+
+/* ===== BOUTON TOGGLE SIDEBAR (BLANC + FLÈCHE BLEU MARINE) ===== */
+[data-testid="stSidebarCollapsedControl"],
+[data-testid="stSidebarCollapseButton"],
+[data-testid="collapsedControl"],
+[data-testid="stExpandSidebarButton"],
+button[kind="header"],
+button[kind="headerNoPadding"],
+button[data-testid="stBaseButton-header"],
+button[data-testid="stBaseButton-headerNoPadding"],
+header[data-testid="stHeader"] button {{
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #1e2a5e !important;
+    border: 1px solid rgba(99,102,241,0.3) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 4px 12px rgba(30,42,94,0.2) !important;
+    z-index: 999999 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    padding: 8px 10px !important;
+    margin: 6px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+}}
+
+[data-testid="stSidebarCollapsedControl"]:hover,
+[data-testid="stSidebarCollapseButton"]:hover,
+[data-testid="collapsedControl"]:hover,
+button[kind="header"]:hover,
+button[kind="headerNoPadding"]:hover {{
+    background: #f1f5f9 !important;
+    transform: scale(1.05) !important;
+    box-shadow: 0 6px 18px rgba(30,42,94,0.4) !important;
+}}
+
+[data-testid="stSidebarCollapsedControl"] svg,
+[data-testid="stSidebarCollapseButton"] svg,
+[data-testid="collapsedControl"] svg,
+[data-testid="stExpandSidebarButton"] svg,
+button[kind="header"] svg,
+button[kind="headerNoPadding"] svg,
+header[data-testid="stHeader"] button svg {{
+    fill: #1e2a5e !important;
+    color: #1e2a5e !important;
+    stroke: #1e2a5e !important;
+    width: 20px !important;
+    height: 20px !important;
+}}
+
+/* ===== SELECTBOX ===== */
+.stSelectbox > div > div,
+div[data-baseweb="select"] > div,
+div[data-baseweb="select"] > div > div {{
+    background-color: {v['input_bg']} !important;
+    background: {v['input_bg']} !important;
+    border: 2px solid #8b5cf6 !important;
+    border-radius: 10px !important;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15) !important;
+}}
+
+.stSelectbox > div > div > div,
+.stSelectbox > div > div > div > div,
+.stSelectbox div[data-baseweb="select"] span,
+.stSelectbox div[data-baseweb="select"] div,
+div[data-baseweb="select"] > div > div,
+div[data-baseweb="select"] span,
+div[data-baseweb="select"] p {{
+    color: {v['input_text']} !important;
+    -webkit-text-fill-color: {v['input_text']} !important;
+    font-weight: 600 !important;
+    font-size: 1rem !important;
+    opacity: 1 !important;
+}}
+
+div[data-baseweb="select"] svg,
+div[data-baseweb="select"] [data-baseweb="icon"] svg {{
+    fill: #8b5cf6 !important;
+    color: #8b5cf6 !important;
+    stroke: #8b5cf6 !important;
+    width: 20px !important;
+    height: 20px !important;
+}}
+
+/* Menu ouvert */
+div[data-baseweb="popover"],
+div[data-baseweb="popover"] > div {{
+    background-color: {v['surface']} !important;
+    border: 2px solid #8b5cf6 !important;
+    border-radius: 10px !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2) !important;
+}}
+
+ul[data-baseweb="menu"],
+div[data-baseweb="popover"] ul,
+[role="listbox"] {{
+    background-color: {v['surface']} !important;
+    border-radius: 8px !important;
+    padding: 6px !important;
+}}
+
+li[role="option"],
+[role="option"] {{
+    background-color: {v['surface']} !important;
+    color: {v['text_main']} !important;
+    font-weight: 500 !important;
+    padding: 14px 18px !important;
+    font-size: 0.95rem !important;
+    border-radius: 6px !important;
+    margin: 2px 0 !important;
+    border-left: 4px solid transparent !important;
+    transition: all 0.15s ease !important;
+}}
+
+li[role="option"]:hover,
+[role="option"]:hover {{
+    background-color: rgba(99, 102, 241, 0.15) !important;
+    color: {v['text_main']} !important;
+    border-left: 4px solid #8b5cf6 !important;
+    padding-left: 22px !important;
+}}
+
+li[aria-selected="true"],
+[role="option"][aria-selected="true"] {{
+    background: linear-gradient(90deg, rgba(139, 92, 246, 0.25), rgba(99, 102, 241, 0.12)) !important;
+    color: {v['text_main']} !important;
+    border-left: 4px solid #8b5cf6 !important;
+    font-weight: 700 !important;
+    padding-left: 22px !important;
+}}
+
+div[data-baseweb="popover"] div,
+ul[data-baseweb="menu"] div,
+[role="listbox"] div,
+[role="option"] span,
+[role="option"] div {{
+    color: {v['text_main']} !important;
+    background-color: transparent !important;
+}}
+
+/* ===== MASQUER LA BANDE STREAMLIT CLOUD ===== */
+[data-testid="stManageAppButton"],
+iframe[title="streamlit_app_manage_button"],
+.viewerBadge_container__1QSob,
+.viewerBadge_link__1S137,
+[class*="viewerBadge"] {{
+    display: none !important;
+}}
+
+[data-testid="stBottom"] > div:last-child,
+footer[data-testid="stBottom"] {{
+    display: none !important;
+}}
+
+[data-testid="stUserMenu"],
+[data-testid="stProfileButton"],
+.stUserAvatar {{
+    display: none !important;
+}}
+
+/* ===== CONTENU PRINCIPAL ===== */
+.main .block-container {{
+    padding-top: 1rem !important;
+}}
 #MainMenu {{ display: none !important; }}
 footer {{ display: none !important; }}
 div[data-testid="stDecoration"] {{ display: none !important; }}
@@ -325,47 +494,6 @@ section[data-testid="stSidebar"] > div {{ padding-top: 0 !important; }}
     border: 1px solid {v['border']} !important;
 }}
 
-.stSelectbox > div > div {{
-    background-color: {v['input_bg']} !important;
-    border-radius: 10px !important;
-    color: {v['input_text']} !important;
-}}
-.stSelectbox > div > div > div {{ color: {v['input_text']} !important; }}
-div[data-baseweb="select"] > div {{
-    background-color: {v['input_bg']} !important;
-    color: {v['input_text']} !important;
-    border-color: {v['input_border']} !important;
-}}
-
-div[data-baseweb="popover"] {{ background-color: {v['input_bg']} !important; }}
-div[data-baseweb="popover"] > div {{ background-color: {v['input_bg']} !important; }}
-ul[data-baseweb="menu"],
-div[data-baseweb="popover"] ul,
-[role="listbox"] {{
-    background-color: {v['input_bg']} !important;
-    border: 1px solid {v['input_border']} !important;
-    border-radius: 10px !important;
-}}
-li[role="option"], [role="option"] {{
-    background-color: {v['input_bg']} !important;
-    color: {v['input_text']} !important;
-    font-weight: 500 !important;
-}}
-li[role="option"]:hover, [role="option"]:hover {{
-    background-color: rgba(99,102,241,0.15) !important;
-    color: {v['input_text']} !important;
-}}
-li[aria-selected="true"], [role="option"][aria-selected="true"] {{
-    background-color: rgba(99,102,241,0.25) !important;
-    color: {v['input_text']} !important;
-}}
-div[data-baseweb="popover"] div,
-ul[data-baseweb="menu"] div,
-[role="listbox"] div {{
-    color: {v['input_text']} !important;
-    background-color: transparent !important;
-}}
-
 .stRadio label,
 .stRadio > div > label > div,
 .stCheckbox label {{ color: {v['text_main']} !important; }}
@@ -466,7 +594,57 @@ section[data-testid="stFileUploadDropzone"] svg {{ fill: {v['text_muted']} !impo
 }}
 </style>
 """
+
 st.markdown(get_css(st.session_state.theme), unsafe_allow_html=True)
+
+# ======================
+# JS : Force le texte des selectbox + masque l'UI Cloud
+# ======================
+st.markdown("""
+<script>
+function forceSelectboxText() {
+    const isLight = document.querySelector('.stApp') && 
+                    getComputedStyle(document.body).backgroundColor.includes('255');
+    const textColor = isLight ? '#0f172a' : '#ffffff';
+    
+    document.querySelectorAll('.stSelectbox [data-baseweb="select"] *').forEach(el => {
+        if (el.children.length === 0 && el.textContent.trim().length > 0) {
+            el.style.setProperty('color', textColor, 'important');
+            el.style.setProperty('-webkit-text-fill-color', textColor, 'important');
+            el.style.setProperty('opacity', '1', 'important');
+            el.style.setProperty('font-weight', '600', 'important');
+        }
+    });
+    document.querySelectorAll('.stSelectbox [data-baseweb="select"] svg').forEach(el => {
+        el.style.setProperty('fill', '#8b5cf6', 'important');
+        el.style.setProperty('stroke', '#8b5cf6', 'important');
+    });
+}
+forceSelectboxText();
+setInterval(forceSelectboxText, 300);
+
+function killStreamlitCloudUI() {
+    const selectors = [
+        '[data-testid="stAppDeployButton"]',
+        '[data-testid="stManageAppButton"]',
+        '[data-testid="stToolbar"]',
+        '[data-testid="stToolbarActions"]',
+        '.stAppDeployButton',
+        '.stDeployButton',
+        '.viewerBadge_container__1QSob',
+        '.viewerBadge_link__1S137',
+        'iframe[title="streamlit_app_manage_button"]'
+    ];
+    selectors.forEach(sel => {
+        document.querySelectorAll(sel).forEach(el => {
+            el.style.display = 'none';
+        });
+    });
+}
+killStreamlitCloudUI();
+setInterval(killStreamlitCloudUI, 500);
+</script>
+""", unsafe_allow_html=True)
 
 
 def svg_tag(name, size=18, color="currentColor"):
@@ -523,8 +701,6 @@ def analyser_url(url):
 # GÉNÉRATION PDF PROFESSIONNEL
 # ============================================================
 def generer_pdf_rapport(url, est_mal, proba, date_str, features=None, niveau=""):
-    """Génère un rapport PDF professionnel avec fpdf2."""
-
     class PDF(FPDF):
         def header(self):
             self.set_fill_color(30, 42, 94)
@@ -698,16 +874,16 @@ def generer_pdf_rapport(url, est_mal, proba, date_str, features=None, niveau="")
     if est_mal:
         recs = [
             "Ne cliquez PAS sur cette URL.",
-            "Ne saisissez aucune information personnelle (mot de passe, coordonnees bancaires).",
+            "Ne saisissez aucune information personnelle.",
             "Ne transferez pas ce lien a vos contacts.",
             "Signalez cette URL aux autorites competentes.",
-            "En cas de doute, contactez directement l'organisme via son site officiel.",
+            "En cas de doute, contactez l'organisme via son site officiel.",
         ]
     else:
         recs = [
-            "Cette URL semble sure, mais restez toujours vigilant.",
-            "Verifiez toujours le nom de domaine avant de saisir des informations sensibles.",
-            "Utilisez un gestionnaire de mots de passe pour eviter les reutilisations.",
+            "Cette URL semble sure, mais restez vigilant.",
+            "Verifiez toujours le nom de domaine.",
+            "Utilisez un gestionnaire de mots de passe.",
         ]
 
     for i, rec in enumerate(recs, 1):
@@ -726,9 +902,8 @@ def generer_pdf_rapport(url, est_mal, proba, date_str, features=None, niveau="")
     pdf.set_text_color(120, 120, 120)
     pdf.set_x(10)
     pdf.multi_cell(190, 5,
-        "Ce rapport a ete genere automatiquement par LoupeURL, un outil de detection "
-        "d'URL malveillantes base sur le Machine Learning. Les resultats fournis sont "
-        "indicatifs et ne remplacent pas une analyse de securite approfondie.")
+        "Ce rapport a ete genere automatiquement par LoupeURL. "
+        "Les resultats sont indicatifs et ne remplacent pas une analyse approfondie.")
 
     output = pdf.output(dest='S')
     if isinstance(output, str):
@@ -873,10 +1048,10 @@ with st.sidebar:
 
     st.markdown('<div style="border-top:1px solid rgba(120,120,150,0.15);margin:0.8rem 0;"></div>', unsafe_allow_html=True)
 
-    theme_label = "Theme clair" if st.session_state.theme == "dark" else "Theme sombre"
+    theme_label = "Theme sombre" if st.session_state.theme == "light" else "Theme clair"
     st.markdown('<div class="nav-btn-wrapper">', unsafe_allow_html=True)
     if st.button(theme_label, key="toggle_theme", use_container_width=True):
-        st.session_state.theme = "light" if st.session_state.theme == "dark" else "dark"
+        st.session_state.theme = "dark" if st.session_state.theme == "light" else "light"
         st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
 
